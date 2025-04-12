@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "backlinks-mcp"
+version = "0.1.0"
+description = "A MCP service for retrieving backlink information for any domain using Ahrefs' data"
+readme = "README.md"
+authors = [
+    {name = "yangchuanhu", email = "ych_1024@163.com"}
+]
+license = {text = "MIT"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "fastmcp>=2.0.0",
+    "requests>=2.32.3",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/cnych/backlinks-mcp"
+"Bug Tracker" = "https://github.com/cnych/backlinks-mcp/issues"
+
+[tool.setuptools]
+packages = ["backlinks_mcp"]
+package-dir = {"" = "src"}
+license-files = []
