@@ -4,7 +4,7 @@ build-backend = "pdm.backend"
 
 [project]
 name = "backlinks-mcp"
-version = "0.1.1"
+version = "0.1.7"
 description = "A MCP service for retrieving backlink information for any domain using Ahrefs' data"
 readme = "README.md"
 authors = [
@@ -23,11 +23,12 @@ dependencies = [
 ]
 
 [project.scripts]
-backlinks-mcp = "backlinks-mcp:server:main"
+backlinks-mcp = "backlinks_mcp.server:main"
 
 [project.urls]
 "Homepage" = "https://github.com/cnych/backlinks-mcp"
 "Bug Tracker" = "https://github.com/cnych/backlinks-mcp/issues"
 
 [tool.setuptools]
+packages = ["backlinks_mcp"]
 package-dir = {"" = "src"}

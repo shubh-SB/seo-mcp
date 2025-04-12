@@ -24,16 +24,6 @@ This service provides an API to retrieve backlink data for websites. It handles 
 - A CapSolver account and API key (register [here](https://dashboard.capsolver.com/passport/register?inviteCode=1dTH7WQSfHD0))
 - `uv` installed (on macOS, you might need to install with `brew install uv`)
 
-### Installation from PyPI
-
-You can install the package directly from PyPI:
-
-```bash
-pip install backlinks-mcp
-# or with uv
-uv pip install backlinks-mcp
-```
-
 ### Manual Setup
 
 1. Clone the repository:
@@ -65,7 +55,7 @@ You can use FastMCP to run the service in several ways:
 To install this server in Claude Desktop and interact with it right away:
 
 ```bash
-fastmcp install src/backlinks-mcp/server.py
+fastmcp install src/backlinks_mcp/server.py
 ```
 
 #### Test with the MCP Inspector
@@ -73,8 +63,34 @@ fastmcp install src/backlinks-mcp/server.py
 For development and testing:
 
 ```bash
-fastmcp dev src/backlinks-mcp/server.py
+fastmcp dev src/backlinks_mcp/server.py
 ```
+
+#### Install in Cursor IDE
+
+On Cursor Settings, switch to MCP tab, click the `+Add new global MCP server` button, then input the following content:
+
+```json
+{
+  "mcpServers": {
+    "Backlink MCP": {
+      "command": "uvx",
+      "args": ["backlinks-mcp"],
+      "env": {
+        "CAPSOLVER_API_KEY": "CAP-xxxxxx"
+      }
+    }
+  }
+}
+```
+
+Also, you can create a `.cursor/mcp.json` file in the project root directory and input the above content, so it's a project-specific MCP server.
+
+> `CAPSOLVER_API_KEY` env can get from [here](https://dashboard.capsolver.com/passport/register?inviteCode=1dTH7WQSfHD0).
+
+Next, we can use this MCP in Cursor:
+
+![Use Backlinks MCP on Cursor](./assets/use-backlinks-mcp-on-cursor.png)
 
 ### API Reference
 
