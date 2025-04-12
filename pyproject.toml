@@ -1,14 +1,14 @@
 [build-system]
-requires = ["setuptools>=42", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["pdm-backend>=2.4.0"]
+build-backend = "pdm.backend"
 
 [project]
 name = "backlinks-mcp"
-version = "0.1.0"
+version = "0.1.1"
 description = "A MCP service for retrieving backlink information for any domain using Ahrefs' data"
 readme = "README.md"
 authors = [
-    {name = "yangchuanhu", email = "ych_1024@163.com"}
+    {name = "cnych", email = "ych_1024@163.com"}
 ]
 license = {text = "MIT"}
 classifiers = [
@@ -22,11 +22,12 @@ dependencies = [
     "requests>=2.32.3",
 ]
 
+[project.scripts]
+backlinks-mcp = "backlinks-mcp:server:main"
+
 [project.urls]
 "Homepage" = "https://github.com/cnych/backlinks-mcp"
 "Bug Tracker" = "https://github.com/cnych/backlinks-mcp/issues"
 
 [tool.setuptools]
-packages = ["backlinks_mcp"]
 package-dir = {"" = "src"}
-license-files = []

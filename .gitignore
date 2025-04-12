@@ -66,3 +66,5 @@ venv.bak/
 
 # Signature cache
 signature_cache.json 
+
+temp/

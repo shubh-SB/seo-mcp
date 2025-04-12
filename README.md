@@ -65,7 +65,7 @@ You can use FastMCP to run the service in several ways:
 To install this server in Claude Desktop and interact with it right away:
 
 ```bash
-fastmcp install src/backlinks_mcp/server.py
+fastmcp install src/backlinks-mcp/server.py
 ```
 
 #### Test with the MCP Inspector
@@ -73,7 +73,7 @@ fastmcp install src/backlinks_mcp/server.py
 For development and testing:
 
 ```bash
-fastmcp dev src/backlinks_mcp/server.py
+fastmcp dev src/backlinks-mcp/server.py
 ```
 
 ### API Reference

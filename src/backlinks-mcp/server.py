@@ -309,3 +309,13 @@ def get_backlinks_list(domain: str) -> Optional[List[Dict[str, Any]]]:
     else:
         print(f"ERROR: No valid backlinks data retrieved for {domain}")
         return None
+
+
+# Main execution
+
+def main():
+    """Run the MCP server"""
+    mcp.run()
+
+if __name__ == "__main__":
+    main()
