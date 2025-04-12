@@ -8,6 +8,8 @@ This service provides an API to retrieve backlink data for websites. It handles 
 
 > This MCP server is only for learning purposes, please do not abuse it, otherwise the consequences will be self-responsible. This project is inspired by `@哥飞社群`.
 
+About this MCP Server, please refer to the introduction of [Claude MCP Backlinks MCP](https://www.claudemcp.com/servers/backlinks-mcp).
+
 ## Features
 
 - 🔍 Retrieve backlink data for any domain
