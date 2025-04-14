@@ -4,7 +4,7 @@ build-backend = "pdm.backend"
 
 [project]
 name = "seo-mcp"
-version = "0.1.5"
+version = "0.2.4"
 description = "A free SEO tool MCP (Model Control Protocol) service based on Ahrefs data. Includes features such as backlinks, keyword ideas, and more."
 readme = "README.md"
 authors = [

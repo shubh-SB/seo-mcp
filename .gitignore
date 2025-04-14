@@ -68,3 +68,5 @@ venv.bak/
 signature_cache.json 
 
 temp/
+
+logs/
