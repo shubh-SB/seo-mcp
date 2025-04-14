@@ -9,12 +9,14 @@ import time
 import json
 import os
 from datetime import datetime
+import urllib.parse
 from typing import Dict, List, Optional, Tuple, Any, cast
 
 from fastmcp import FastMCP
+from seo_mcp.backlinks import get_backlinks
+from seo_mcp.keywords import get_keyword_ideas
 
-
-mcp = FastMCP("Backlinks MCP")
+mcp = FastMCP("SEO MCP")
 
 # CapSolver website: https://dashboard.capsolver.com/passport/register?inviteCode=1dTH7WQSfHD0
 # Get API Key from environment variable - must be set for production use
@@ -34,18 +36,16 @@ def iso_to_timestamp(iso_date_string: str) -> float:
     dt = datetime.fromisoformat(iso_date_string)
     return dt.timestamp()
 
-def get_capsolver_token(domain: str) -> Optional[str]:
+def get_capsolver_token(site_url: str) -> Optional[str]:
     """
     Step 1: Use CapSolver to solve the captcha and get a token
     
     Args:
-        domain: Domain to query
+        site_url: Site URL to query
         
     Returns:
         Verification token or None if failed
     """
-    site_url = f"https://ahrefs.com/backlink-checker/?input={domain}&mode=subdomains"
-    
     if not api_key:
         print("ERROR: CAPSOLVER_API_KEY environment variable not set")
         return None
@@ -219,46 +219,6 @@ def get_signature(token: str, domain: str) -> Tuple[Optional[str], Optional[str]
         print(f"ERROR: Failed to parse signature data: {e}")
         return None, None
 
-def get_backlinks(signature: str, valid_until: str, domain: str) -> Optional[List[Any]]:
-    """
-    Step 3: Get backlinks list using signature and validUntil
-    
-    Args:
-        signature: Signature
-        valid_until: Expiration time
-        domain: Domain to query
-        
-    Returns:
-        Backlinks data list, or None if failed
-    """
-    if not signature or not valid_until:
-        print("ERROR: No signature or valid_until, cannot proceed")
-        return None
-    
-    url = "https://ahrefs.com/v4/stGetFreeBacklinksList"
-    payload = {
-        "reportType": "TopBacklinks",
-        "signedInput": {
-            "signature": signature,
-            "input": {
-                "validUntil": valid_until,
-                "mode": "subdomains",
-                "url": f"{domain}/"
-            }
-        }
-    }
-    
-    headers = {
-        "Content-Type": "application/json"
-    }
-    
-    response = requests.post(url, json=payload, headers=headers)
-    if response.status_code != 200:
-        print(f"ERROR: Failed to get backlinks, status code: {response.status_code}, response: {response.text}")
-        return None
-    
-    data = response.json()
-    return data
 
 @mcp.tool()
 def get_backlinks_list(domain: str) -> Optional[List[Dict[str, Any]]]:
@@ -275,7 +235,8 @@ def get_backlinks_list(domain: str) -> Optional[List[Dict[str, Any]]]:
     # If no valid signature in cache, get a new one
     if not signature or not valid_until:
         # Step 1: Get token
-        token = get_capsolver_token(domain)
+        site_url = f"https://ahrefs.com/backlink-checker/?input={domain}&mode=subdomains"
+        token = get_capsolver_token(site_url)
         if not token:
             print(f"ERROR: Failed to get verification token for domain: {domain}")
             raise Exception(f"Failed to get verification token for domain: {domain}")
@@ -287,35 +248,27 @@ def get_backlinks_list(domain: str) -> Optional[List[Dict[str, Any]]]:
             raise Exception(f"Failed to get signature for domain: {domain}")
     
     # Step 3: Get backlinks list
-    backlinks_data = get_backlinks(signature, valid_until, domain)
+    return get_backlinks(signature, valid_until, domain)
 
-    if backlinks_data and len(backlinks_data) > 1 and "topBacklinks" in backlinks_data[1]:
-        backlinks = backlinks_data[1]["topBacklinks"]["backlinks"]
-        print(f"SUCCESS: Retrieved {len(backlinks)} backlinks for {domain}")
-        # Only keep necessary fields
-        simplified_backlinks = []
-        for backlink in backlinks:
-            simplified_backlink = {
-                "anchor": backlink.get("anchor", ""),
-                "domainRating": backlink.get("domainRating", 0),
-                "title": backlink.get("title", ""),
-                "urlFrom": backlink.get("urlFrom", ""),
-                "urlTo": backlink.get("urlTo", ""),
-                "edu": backlink.get("edu", False),
-                "gov": backlink.get("gov", False),
-            }
-            simplified_backlinks.append(simplified_backlink)
-        return simplified_backlinks
-    else:
-        print(f"ERROR: No valid backlinks data retrieved for {domain}")
-        return None
 
+@mcp.tool()
+def keyword_generator(keyword: str, country: str = "us", search_engine: str = "Google") -> Optional[List[str]]:
+    """
+    Get keyword ideas for the specified keyword
+    """
+    site_url = f"https://ahrefs.com/keyword-generator/?country={country}&input={urllib.parse.quote(keyword)}"
+    token = get_capsolver_token(site_url)
+    if not token:
+        print(f"ERROR: Failed to get verification token for keyword: {keyword}")
+        raise Exception(f"Failed to get verification token for keyword: {keyword}")
+    return get_keyword_ideas(token, keyword, country, search_engine)
 
 # Main execution
 
 def main():
     """Run the MCP server"""
     mcp.run()
+
 
 if __name__ == "__main__":
     main()

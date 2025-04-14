@@ -1,83 +1,101 @@
-# Backlinks MCP
+# SEO MCP
 
-A MCP (Model Control Protocol) service for retrieving backlink information for any domain using Ahrefs' data.
+A free SEO tool MCP (Model Control Protocol) service based on Ahrefs data. Includes features such as backlinks, keyword ideas, and more.
+
+[中文版](README_CN.md)
 
 ## Overview
 
-This service provides an API to retrieve backlink data for websites. It handles the entire process including captcha solving, authentication, and data retrieval from Ahrefs. The results are cached to improve performance and reduce API costs.
+This service provides APIs to retrieve SEO data for websites. It handles the entire process, including captcha solving, authentication, and fetching data from Ahrefs.
 
-> This MCP server is only for learning purposes, please do not abuse it, otherwise the consequences will be self-responsible. This project is inspired by `@哥飞社群`.
+> This MCP service is for learning purposes only. Please do not abuse it, or you will bear the consequences. This project was inspired by the `@GoFei Community`.
 
-About this MCP Server, please refer to the introduction of [Claude MCP Backlinks MCP](https://www.claudemcp.com/servers/backlinks-mcp).
+For more information about this MCP service, please refer to [Claude MCP SEO MCP Introduction](https://www.claudemcp.com/servers/seo-mcp).
 
 ## Features
 
 - 🔍 Retrieve backlink data for any domain
-- 🔒 Automatic captcha solving with CapSolver
+- 🔎 Get keyword ideas and SEO suggestions
+- 🔒 Automatically solve captchas using CapSolver
 - 💾 Signature caching to reduce API calls
 - 🚀 Fast and efficient data retrieval
-- 🧹 Simplified output with the most relevant backlink information
+- 🧹 Simplified output providing the most relevant SEO information
 
 ## Installation
 
 ### Prerequisites
 
-- Python 3.8 or higher
-- A CapSolver account and API key (register [here](https://dashboard.capsolver.com/passport/register?inviteCode=1dTH7WQSfHD0))
-- `uv` installed (on macOS, you might need to install with `brew install uv`)
+- Python 3.10 or higher
+- CapSolver account and API key (register [here](https://dashboard.capsolver.com/passport/register?inviteCode=1dTH7WQSfHD0))
+- `pip` or `uv` installed (on macOS, you may need to install with `brew install uv`)
 
-### Manual Setup
+### Install from PyPI
+
+```bash
+pip install seo-mcp
+```
+
+Or use `uv`:
+
+```bash
+uv pip install seo-mcp
+```
+
+### Manual Installation
 
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/cnych/backlinks-mcp.git
-   cd backlinks-mcp
+   git clone https://github.com/cnych/seo-mcp.git
+   cd seo-mcp
    ```
 
-2. Install FastMCP with uv:
+2. Install dependencies using pip or uv:
 
    ```bash
-   uv pip install fastmcp
+   pip install -e .
+   # or
+   uv pip install -e .
    ```
 
-3. Set up your CapSolver API key:
+3. Set the CapSolver API key:
+
    ```bash
    export CAPSOLVER_API_KEY="your-capsolver-api-key"
    ```
 
 ## Usage
 
-### Running the Service
+### Running the service
 
-You can use FastMCP to run the service in several ways:
+You can run the service in several ways:
 
 #### Install in Claude Desktop
 
-To install this server in Claude Desktop and interact with it right away:
+To install this service and interact with it immediately in Claude Desktop:
 
 ```bash
-fastmcp install src/backlinks_mcp/server.py
+fastmcp install src/seo_mcp/server.py
 ```
 
-#### Test with the MCP Inspector
+#### Use MCP Inspector for testing
 
 For development and testing:
 
 ```bash
-fastmcp dev src/backlinks_mcp/server.py
+fastmcp dev src/seo_mcp/server.py
 ```
 
 #### Install in Cursor IDE
 
-On Cursor Settings, switch to MCP tab, click the `+Add new global MCP server` button, then input the following content:
+In the Cursor settings, switch to the MCP tab, click the `+ Add new global MCP service` button, and then input the following content:
 
 ```json
 {
   "mcpServers": {
-    "Backlink MCP": {
+    "SEO MCP": {
       "command": "uvx",
-      "args": ["backlinks-mcp"],
+      "args": ["--python 3.10", "seo-mcp"],
       "env": {
         "CAPSOLVER_API_KEY": "CAP-xxxxxx"
       }
@@ -86,45 +104,48 @@ On Cursor Settings, switch to MCP tab, click the `+Add new global MCP server` bu
 }
 ```
 
-Also, you can create a `.cursor/mcp.json` file in the project root directory and input the above content, so it's a project-specific MCP server.
+You can also create a `.cursor/mcp.json` file in the project root directory and input the above content, so it becomes a specific project's MCP service.
 
-> `CAPSOLVER_API_KEY` env can get from [here](https://dashboard.capsolver.com/passport/register?inviteCode=1dTH7WQSfHD0).
+> The `CAPSOLVER_API_KEY` environment variable can be obtained from [here](https://dashboard.capsolver.com/passport/register?inviteCode=1dTH7WQSfHD0).
 
 Next, we can use this MCP in Cursor:
 
-![Use Backlinks MCP on Cursor](./assets/use-backlinks-mcp-on-cursor.png)
+![Use SEO MCP Backlinks Tool on Cursor](./assets/use-backlinks-mcp-on-cursor.png)
+
+![Use SEO MCP Keyword Tool on Cursor](./assets/use-keyword-mcp-on-cursor.png)
 
 ### API Reference
 
-The service exposes the following MCP tool:
+The service exposes the following MCP tools:
 
 #### `get_backlinks_list(domain: str)`
 
-Retrieves a list of backlinks for the specified domain.
+Retrieve the backlink list for a specified domain.
 
 **Parameters:**
 
-- `domain` (string): The domain to query (e.g., "example.com")
+- `domain` (string): The domain to query (e.g. "example.com")
 
 **Returns:**
+
 A list of backlink objects, each containing:
 
-- `anchor`: The anchor text of the backlink
-- `domainRating`: The domain rating score (0-100)
-- `title`: The title of the linking page
-- `urlFrom`: The URL of the page containing the backlink
-- `urlTo`: The URL being linked to
-- `edu`: Boolean indicating if it's from an educational site
-- `gov`: Boolean indicating if it's from a government site
+- `anchor`：The anchor text of the backlink
+- `domainRating`：The domain rating (0-100)
+- `title`：The title of the linked page
+- `urlFrom`：The URL of the page containing the backlink
+- `urlTo`：The URL of the page being linked to
+- `edu`：A boolean value indicating whether the backlink is from an educational website
+- `gov`：A boolean value indicating whether the backlink is from a government website
 
 **Example Response:**
 
 ```json
 [
   {
-    "anchor": "example link",
+    "anchor": "Example link",
     "domainRating": 76,
-    "title": "Useful Resources",
+    "title": "Useful resource",
     "urlFrom": "https://referringsite.com/resources",
     "urlTo": "https://example.com/page",
     "edu": false,
@@ -134,32 +155,57 @@ A list of backlink objects, each containing:
 ]
 ```
 
+#### `keyword_generator(keyword: str, country: str = "us", search_engine: str = "Google")`
+
+Get creative and SEO suggestions for a specified keyword.
+
+**Parameters:**
+
+- `keyword` (string): The keyword to query
+- `country` (string): The country code (e.g. "us")
+- `search_engine` (string): The search engine (e.g. "Google")
+
+**Returns:**
+
+- A list of keyword ideas, containing two types:
+
+  - `keyword ideas`：Regular keyword suggestions, containing keyword, country, difficulty, volume, and update time
+  - `question ideas`：Question-based keyword suggestions, with the same format
+
+  Each keyword object contains:
+
+  - `keyword`：The keyword text
+  - `country`：The country code
+  - `difficulty`：The difficulty rating (Easy, Medium, Hard, or Unknown)
+  - `volume`：The search volume level (e.g. MoreThanOneHundred, MoreThanOneThousand)
+  - `updatedAt`：The data update time
+
 ## Development
 
-For development purposes, you can clone the repository and install development dependencies:
+For development purposes, you can clone the repository and install the development dependencies:
 
 ```bash
-git clone https://github.com/cnych/backlinks-mcp.git
-cd backlinks-mcp
-uv sync
+git clone https://github.com/cnych/seo-mcp.git
+cd seo-mcp
+uv sync  # or use pip install -e .
 ```
 
-## How It Works
+## How it works
 
-1. The service first attempts to retrieve a cached signature for the domain
-2. If no valid cache exists, it:
-   - Solves the Cloudflare Turnstile captcha using CapSolver
-   - Obtains a signature and validity period from Ahrefs
-   - Caches this information for future use
-3. Uses the signature to retrieve the backlinks data
-4. Processes and returns the simplified backlink information
+1. The service first attempts to retrieve the cached signature of the domain
+2. If no valid cache exists, it will:
+   - Use CapSolver to solve the Cloudflare Turnstile captcha
+   - Retrieve the signature and expiration date from Ahrefs
+   - Cache this information for future use
+3. Use the signature to retrieve SEO data
+4. Process and return simplified SEO information
 
 ## Troubleshooting
 
-- **CapSolver API Key Error**: Ensure your `CAPSOLVER_API_KEY` environment variable is set correctly
-- **Rate Limiting**: If you encounter rate limits, try using the service less frequently
-- **No Results**: Some domains may have no backlinks or may not be indexed by Ahrefs
-- **Issues**: If you encounter issues with Backlinks MCP, check the [Backlinks MCP GitHub repository](https://github.com/cnych/backlinks-mcp) for troubleshooting guidance
+- **CapSolver API key error**：Ensure the `CAPSOLVER_API_KEY` environment variable is correctly set
+- **Rate limiting**：If you encounter rate limiting, try reducing the frequency of using the service
+- **No results**：Some domains may have no backlinks or not indexed by Ahrefs
+- **Issues**：If you encounter issues with SEO MCP, please refer to the [SEO MCP GitHub repository](https://github.com/cnych/seo-mcp) for troubleshooting guides
 
 ## License
 

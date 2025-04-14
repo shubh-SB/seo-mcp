@@ -3,9 +3,9 @@ requires = ["pdm-backend>=2.4.0"]
 build-backend = "pdm.backend"
 
 [project]
-name = "backlinks-mcp"
-version = "0.1.7"
-description = "A MCP service for retrieving backlink information for any domain using Ahrefs' data"
+name = "seo-mcp"
+version = "0.1.5"
+description = "A free SEO tool MCP (Model Control Protocol) service based on Ahrefs data. Includes features such as backlinks, keyword ideas, and more."
 readme = "README.md"
 authors = [
     {name = "cnych", email = "ych_1024@163.com"}
@@ -16,19 +16,21 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 dependencies = [
     "fastmcp>=2.0.0",
     "requests>=2.32.3",
+    "pydantic>=2.5.0",
+    "pydantic-core>=2.14.0"
 ]
 
 [project.scripts]
-backlinks-mcp = "backlinks_mcp.server:main"
+seo-mcp = "seo_mcp.server:main"
 
 [project.urls]
-"Homepage" = "https://github.com/cnych/backlinks-mcp"
-"Bug Tracker" = "https://github.com/cnych/backlinks-mcp/issues"
+"Homepage" = "https://github.com/cnych/seo-mcp"
+"Bug Tracker" = "https://github.com/cnych/seo-mcp/issues"
 
 [tool.setuptools]
-packages = ["backlinks_mcp"]
+packages = ["seo_mcp"]
 package-dir = {"" = "src"}
