@@ -21,7 +21,6 @@ def iso_to_timestamp(iso_date_string: str) -> float:
     return dt.timestamp()
 
 
-
 def save_signature_to_cache(signature: str, valid_until: str, overview_data: Dict[str, Any], domain: str) -> bool:
     """
     Save signature information to local cache file
@@ -42,7 +41,7 @@ def save_signature_to_cache(signature: str, valid_until: str, overview_data: Dic
                 cache_data = json.load(f)
         except:
             pass
-    
+
     # Update cache for current domain
     cache_data[domain] = {
         "signature": signature,
@@ -50,7 +49,7 @@ def save_signature_to_cache(signature: str, valid_until: str, overview_data: Dic
         "overview_data": overview_data,
         "timestamp": datetime.now().timestamp()
     }
-    
+
     try:
         with open(SIGNATURE_CACHE_FILE, 'w') as f:
             json.dump(cache_data, f)
@@ -72,25 +71,25 @@ def load_signature_from_cache(domain: str) -> Tuple[Optional[str], Optional[str]
     """
     if not os.path.exists(SIGNATURE_CACHE_FILE):
         return None, None, None
-    
+
     try:
         with open(SIGNATURE_CACHE_FILE, 'r') as f:
             cache_data = json.load(f)
-        
+
         # Check if cache exists for current domain
         if domain not in cache_data:
             return None, None, None
-        
+
         domain_cache = cache_data[domain]
-        
+
         # Check if signature is expired
         valid_until = domain_cache.get("valid_until")
-        
+
         if valid_until:
             # Convert ISO date string to timestamp for comparison
             valid_until_timestamp = iso_to_timestamp(valid_until)
             current_time = time.time()
-            
+
             if current_time < valid_until_timestamp:
                 return domain_cache.get("signature"), valid_until, domain_cache.get("overview_data")
             else:
@@ -101,8 +100,8 @@ def load_signature_from_cache(domain: str) -> Tuple[Optional[str], Optional[str]
         return None, None, None
 
 
-
-def get_signature_and_overview(token: str, domain: str) -> Tuple[Optional[str], Optional[str], Optional[Dict[str, Any]]]:
+def get_signature_and_overview(token: str, domain: str) -> Tuple[
+    Optional[str], Optional[str], Optional[Dict[str, Any]]]:
     """
     Get signature and validUntil parameters using the token
     
@@ -119,17 +118,17 @@ def get_signature_and_overview(token: str, domain: str) -> Tuple[Optional[str], 
         "mode": "subdomains",
         "url": domain
     }
-    
+
     headers = {
         "Content-Type": "application/json"
     }
-    
+
     response = requests.post(url, json=payload, headers=headers)
     if response.status_code != 200:
         return None, None, None
-    
+
     data = response.json()
-    
+
     try:
         # Assuming data format is always ['Ok', {signature object}]
         if isinstance(data, list) and len(cast(List[Any], data)) > 1:
@@ -137,16 +136,16 @@ def get_signature_and_overview(token: str, domain: str) -> Tuple[Optional[str], 
             signature: str = cast(str, second_element['signedInput']['signature'])
             valid_until: str = cast(str, second_element['signedInput']['input']['validUntil'])
             overview_data: Dict[str, Any] = cast(Dict[str, Any], second_element['data'])
-            
+
             # Save the new signature to cache
             save_signature_to_cache(signature, valid_until, overview_data, domain)
-            
+
             return signature, valid_until, overview_data
         else:
             return None, None, None
     except Exception:
         return None, None, None
-    
+
 
 def format_backlinks(backlinks_data: List[Any], domain: str) -> List[Any]:
     """
@@ -170,12 +169,12 @@ def format_backlinks(backlinks_data: List[Any], domain: str) -> List[Any]:
         return simplified_backlinks
     else:
         return []
-    
+
 
 def get_backlinks(signature: str, valid_until: str, domain: str) -> Optional[List[Any]]:
     if not signature or not valid_until:
         return None
-    
+
     url = "https://ahrefs.com/v4/stGetFreeBacklinksList"
     payload = {
         "reportType": "TopBacklinks",
@@ -188,19 +187,18 @@ def get_backlinks(signature: str, valid_until: str, domain: str) -> Optional[Lis
             }
         }
     }
-    
+
     headers = {
         "Content-Type": "application/json"
     }
-    
+
     response = requests.post(url, json=payload, headers=headers)
     if response.status_code != 200:
         return None
-    
+
     data = response.json()
 
     return format_backlinks(data, domain)
-
 
 
 def get_backlinks_overview(signature: str, valid_until: str, domain: str) -> Optional[Dict[str, Any]]:
@@ -218,26 +216,27 @@ def get_backlinks_overview(signature: str, valid_until: str, domain: str) -> Opt
     if not signature or not valid_until:
         print("ERROR: No signature or valid_until, cannot proceed")
         return None
-    
+
     url = "https://ahrefs.com/v4/stGetFreeBacklinksOverview"
     payload = {
         "captcha": signature,
         "mode": "subdomains",
         "url": domain
     }
-    
+
     headers = {
         "Content-Type": "application/json",
         "accept": "*/*",
         "sec-fetch-site": "same-origin"
     }
-    
+
     try:
         response = requests.post(url, json=payload, headers=headers)
         if response.status_code != 200:
-            print(f"ERROR: Failed to get backlinks overview, status code: {response.status_code}, response: {response.text}")
+            print(
+                f"ERROR: Failed to get backlinks overview, status code: {response.status_code}, response: {response.text}")
             return None
-        
+
         data = response.json()
         return data
     except Exception:

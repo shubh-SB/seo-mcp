@@ -1,6 +1,8 @@
 """
 SEO MCP Server: A free SEO tool MCP (Model Control Protocol) service based on Ahrefs data. Includes features such as backlinks, keyword ideas, and more.
 """
+import json
+
 import requests
 import time
 import os
@@ -14,11 +16,11 @@ from seo_mcp.keywords import get_keyword_ideas, get_keyword_difficulty
 from seo_mcp.traffic import check_traffic
 
 
-mcp = FastMCP("SEO MCP")
+mcp = FastMCP("SEO MCP", stateless_http=True)
 
 # CapSolver website: https://dashboard.capsolver.com/passport/register?inviteCode=1dTH7WQSfHD0
 # Get API Key from environment variable - must be set for production use
-api_key = os.environ.get("CAPSOLVER_API_KEY")
+api_key = "CAP-178545675C0D903F9E8102033FA0420FF682DDEB2A619FDED9ACED7E960929D9"
 
 
 def get_capsolver_token(site_url: str) -> Optional[str]:
@@ -66,6 +68,9 @@ def get_capsolver_token(site_url: str) -> Optional[str]:
 
 @mcp.tool()
 def get_backlinks_list(domain: str) -> Optional[Dict[str, Any]]:
+    # return {
+    #     "s":"a"
+    # }
     """
     Get backlinks list for the specified domain
     Args:
@@ -111,6 +116,9 @@ def keyword_generator(keyword: str, country: str = "us", search_engine: str = "G
 
 @mcp.tool()
 def get_traffic(domain_or_url: str, country: str = "None", mode: Literal["subdomains", "exact"] = "subdomains") -> Optional[Dict[str, Any]]:
+    # return {
+    #     "s":"a"
+    # }
     """
     Check the estimated search traffic for any website. 
 
@@ -142,7 +150,8 @@ def keyword_difficulty(keyword: str, country: str = "us") -> Optional[Dict[str, 
 
 def main():
     """Run the MCP server"""
-    mcp.run()
+    # mcp.run()
+    mcp.run(transport="streamable-http", host="0.0.0.0", port=8010)
 
 
 if __name__ == "__main__":
