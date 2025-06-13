@@ -1,8 +1,10 @@
 import requests
 import json
 
-url = "http://0.0.0.0:8000/mcp"  # Use the root URL for JSON-RPC
+url = "http://0.0.0.0:8010/mcp"  # Use the root URL for JSON-RPC
+# url = "https://4e1e19b9d0f915cef8cafc871cfffa7a.serveo.net//mcp"  # Use the root URL for JSON-RPC
 # url = "https://e109ff52be8ae2f43000e6be358dc3ea.serveo.net/mcp"  # Use the root URL for JSON-RPC
+
 headers = {
     "Content-Type": "application/json",
     "Accept": "application/json, text/event-stream",
